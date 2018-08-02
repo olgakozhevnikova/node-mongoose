@@ -18,12 +18,29 @@ connect.then((db) => {
   })
   .then((dish) => {
     console.log(dish);
-    // means it will be executed: finds all dishes in db and makes them available to use
-    return Dishes.find({}).exec();
+    // findByIdAndUpdate() method finds the dish and modifies it
+    return Dishes.findByIdAndUpdate(dish._id, {
+      $set: {description: 'Updated test'}
+    },{
+      // next line means that once the update of the dish is completed,
+      // then exec() will return an updated dish
+      new: true
+    }).exec();
   })
-  .then((dishes) => {
-    console.log(dishes);
-    // make databas empty
+  .then((dish) => {
+    console.log(dish);
+    // add new comment to a selected dish
+    dish.comments.push({
+      rating: 5,
+      comment: 'I like this dish',
+      author: 'Olga'
+    });
+    // save the dish after modification
+    return dish.save();
+  })
+  .then((dish) => {
+    console.log(dish);
+    // make database empty
     return Dishes.remove();
   })
   .then(() => {
